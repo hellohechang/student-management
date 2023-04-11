@@ -68,17 +68,11 @@
         </el-icon>
         <span>数据统计</span>
       </template>
-      <el-menu-item index="3-1">
+      <el-menu-item index="/census">
         <el-icon>
           <Money />
         </el-icon>
         班级科目成绩统计
-      </el-menu-item>
-      <el-menu-item index="3-2">
-        <el-icon>
-          <Money />
-        </el-icon>
-        班级科目对比统计
       </el-menu-item>
     </el-sub-menu>
 

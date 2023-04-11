@@ -1,6 +1,5 @@
 <template>
-
-  <el-form ref="ruleFormRef" :rules="rules"  :model="formUser"  label-width="80px">
+  <el-form ref="ruleFormRef" :rules="rules" :model="formUser" label-width="80px">
     <el-row>
       <el-col>
         <el-form-item prop="roleId" label="所属角色">
@@ -9,51 +8,41 @@
           </el-select>
         </el-form-item>
       </el-col>
-    <el-col :xs="24" :sm="12">
-    <el-form-item label="用户名" prop="username">
-      <el-input v-model="formUser.username" placeholder="请输入用户名" />
-    </el-form-item>
-    </el-col>
-    <el-col :xs="24" :sm="12">
-    <el-form-item label="登录密码" prop="password">
-      <el-input v-model="formUser.password" placeholder="请输入密码" />
-    </el-form-item>
-    </el-col>
       <el-col :xs="24" :sm="12">
-    <el-form-item label="真实姓名" prop="realname">
-      <el-input v-model="formUser.realname" placeholder="请输入真实姓名" />
-    </el-form-item>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="formUser.username" placeholder="请输入用户名" />
+        </el-form-item>
       </el-col>
       <el-col :xs="24" :sm="12">
-    <el-form-item label="联系邮箱" prop="email">
-      <el-input v-model="formUser.email" placeholder="请输入联系邮箱" />
-    </el-form-item>
+        <el-form-item label="真实姓名" prop="realname">
+          <el-input v-model="formUser.realname" placeholder="请输入真实姓名" />
+        </el-form-item>
       </el-col>
       <el-col :xs="24" :sm="12">
-    <el-form-item label="性别" prop="sex">
-      <el-radio-group v-model="formUser.sex" fill="#178557">
-        <el-radio-button label="男" />
-        <el-radio-button label="女" />
-      </el-radio-group>
-    </el-form-item>
+        <el-form-item label="联系邮箱" prop="email">
+          <el-input v-model="formUser.email" placeholder="请输入联系邮箱" />
+        </el-form-item>
       </el-col>
       <el-col :xs="24" :sm="12">
-    <el-form-item label="状态" prop="status">
-      <el-radio-group v-model="formUser.status" fill="#178557">
-        <el-radio-button :label="1">正常</el-radio-button>
-        <el-radio-button :label="0">封禁</el-radio-button>
-      </el-radio-group>
-    </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="formUser.sex" fill="#178557">
+            <el-radio-button label="男" />
+            <el-radio-button label="女" />
+          </el-radio-group>
+        </el-form-item>
+      </el-col>
+      <el-col :xs="24" :sm="12">
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="formUser.status" fill="#178557">
+            <el-radio-button label="1">正常</el-radio-button>
+            <el-radio-button label="0">封禁</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
       </el-col>
 
       <el-col>
         <el-form-item label="备注">
-          <el-input
-              v-model="formUser.remarks"
-              :rows="2"
-              type="textarea"
-              placeholder="请输入备注"
-          />
+          <el-input v-model="formUser.remarks" :rows="2" type="textarea" placeholder="请输入备注" />
         </el-form-item>
       </el-col>
 
@@ -67,17 +56,15 @@
 </template>
 
 <script setup>
-import { reactive,ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import {addUserApi, getAllRoleListApi} from "../../../api/user"
-// import {getAllCourseListApi} from "../../../api/teacher/teacher";
-const emit = defineEmits(['closeAddUserForm','success'])
+import { addUserApi, getAllRoleListApi } from "../../../api/user"
+const emit = defineEmits(['closeAddUserForm', 'success'])
 const subLoading = ref(false)
 const ruleFormRef = ref()
 const formUser = reactive({
   username: '',
-  password: '',
-  status:1,
+  status: '1',
   realname: '',
   email: '',
   sex: '男',
@@ -87,7 +74,6 @@ const formUser = reactive({
 // 定义表单约束规则对象
 const rules = reactive({
   username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  password: [{ required: true, message: '登录密码不能为空', trigger: 'blur' }],
   realname: [{ required: true, message: '真实姓名不能为空', trigger: 'blur' }],
   roleId: [{ required: true, message: '角色不能为空', trigger: 'change' }],
   email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }]
@@ -99,11 +85,11 @@ const addUser = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     subLoading.value = true
     if (valid) {
-      const { data } =  await addUserApi(formUser)
-      if(data.status===200){
+      const { data } = await addUserApi(formUser)
+      if (data.status === 200) {
         ElMessage.success(data.message)
         emit('success')
-      }else {
+      } else {
         ElMessage.error(data.message)
       }
     } else {
@@ -129,7 +115,7 @@ async function getAllRoleList() {
 }
 getAllRoleList()
 // 取消表单
-const close = ()=> {
+const close = () => {
   emit('closeAddUserForm')
 }
 </script>

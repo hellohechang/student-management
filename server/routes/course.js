@@ -113,5 +113,4 @@ route.put('/updatecourse', async (req, res) => {
 })
 
 
-
 module.exports = route

@@ -44,8 +44,8 @@ const ruleFormRef = ref()
 const passwordType = ref('password')
 const loading = ref(false)
 const rules = reactive({
-  password: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  username: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
 })
 // 表单数据
 const ruleForm = reactive({
@@ -63,8 +63,11 @@ const submitForm = (formEl) => {
   formEl.validate(async (valid) => {
     if (valid) {
       loading.value = true
+      let { username,
+        password } = ruleForm
+      password = md5(password)
       // 登录
-      const {data} = await loginApi({ ...ruleForm });
+      const { data } = await loginApi({ username, password });
       if (data.status === 200) {
         // 设置token
         userStore.setToken(data.result.token)

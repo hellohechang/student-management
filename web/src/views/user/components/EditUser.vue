@@ -14,11 +14,6 @@
         </el-form-item>
       </el-col>
       <el-col :xs="24" :sm="12">
-        <el-form-item label="登录密码" prop="password">
-          <el-input v-model="formUser.password" placeholder="请输入密码" />
-        </el-form-item>
-      </el-col>
-      <el-col :xs="24" :sm="12">
         <el-form-item label="真实姓名" prop="realname">
           <el-input v-model="formUser.realname" placeholder="请输入真实姓名" />
         </el-form-item>
@@ -39,9 +34,8 @@
       <el-col :xs="24" :sm="12">
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="formUser.status" fill="#178557">
-            <el-radio-button :label="1">正常</el-radio-button>
-            <el-radio-button :label="0">封禁</el-radio-button>
-
+            <el-radio-button label="1">正常</el-radio-button>
+            <el-radio-button label="0">封禁</el-radio-button>
           </el-radio-group>
         </el-form-item>
       </el-col>
@@ -77,8 +71,7 @@ const data = reactive({
   formUser: {
     id: 0,
     username: '',
-    password: '',
-    status: 1,
+    status: '1',
     realname: '',
     email: '',
     sex: '男',
@@ -92,7 +85,6 @@ formUser.value = deepClone(userInfo.value)
 // 定义表单约束规则对象
 const rules = reactive({
   username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  password: [{ required: true, message: '登录密码不能为空', trigger: 'blur' }],
   realname: [{ required: true, message: '真实姓名不能为空', trigger: 'blur' }],
   roleId: [{ required: true, message: '角色不能为空', trigger: 'blur' }],
   email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' }]

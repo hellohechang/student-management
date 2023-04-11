@@ -4,108 +4,158 @@ let express = require('express'),
 const { queryData, insertData, runSqlite, deleteData, updateData } = require('../sqlite');
 const { _err, encryption, _setTimeout, nanoid, jwten, _success, _nologin } = require('../utils');
 
-// queryData('user', 'id').then(() => { }).catch(async () => {
-//   try {
-//     await runSqlite(`CREATE TABLE user (
-//       id           TEXT PRIMARY KEY
-//                         UNIQUE
-//                         NOT NULL,
-//       name         TEXT,
-//       password     TEXT,
-//       sex          TEXT DEFAULT (0),
-//       email        TEXT,
-//       phone        TEXT,
-//       departmentId TEXT NOT NULL,
-//       jobId        TEXT NOT NULL,
-//       [desc]       TEXT,
-//       time         TEXT,
-//       state        TEXT DEFAULT (0) 
-//   );`)
-//     await runSqlite(`CREATE TABLE department (
-//       id     TEXT PRIMARY KEY
-//                   UNIQUE
-//                   NOT NULL,
-//       name   TEXT,
-//       [desc],
-//       time   TEXT,
-//       state  TEXT DEFAULT (0) 
-//   );`)
-//     await runSqlite(`CREATE TABLE job (
-//       id     TEXT PRIMARY KEY
-//                   UNIQUE
-//                   NOT NULL,
-//       name   TEXT,
-//       [desc] TEXT,
-//       power  TEXT,
-//       time   TEXT,
-//       state  TEXT DEFAULT (0) 
-//   );`)
-//     await runSqlite(`CREATE TABLE customer (
-//     id           TEXT PRIMARY KEY
-//                       UNIQUE
-//                       NOT NULL,
-//     name         TEXT,
-//     sex          TEXT DEFAULT (0),
-//     email        TEXT,
-//     phone        TEXT NOT NULL,
-//     QQ           TEXT,
-//     weixin       TEXT,
-//     type         TEXT,
-//     address      TEXT,
-//     userId       TEXT NOT NULL,
-//     departmentId TEXT NOT NULL,
-//     time         TEXT,
-//     state        TEXT DEFAULT (0) 
-//   );`)
-//     await runSqlite(`CREATE TABLE visit (
-//       id         TEXT PRIMARY KEY
-//                       UNIQUE
-//                       NOT NULL,
-//       customerId TEXT NOT NULL,
-//       visitText  TEXT NOT NULL,
-//       visitTime  TEXT NOT NULL,
-//       time       TEXT,
-//       state      TEXT DEFAULT (0) 
-//   );`)
-//     let id = nanoid();
-//     await insertData('department', [{
-//       "id": id,
-//       "name": "总裁办",
-//       "desc": "公司最高组织机构层，负责公司全面运营管理",
-//       "time": 1568640222269,
-//       "state": 0
-//     }])
-//     await insertData('job', [{
-//       "id": 'root',
-//       "name": "管理员",
-//       "desc": "系统最高权限拥有者",
-//       "power": "userhandle|departhandle|jobhandle|departcustomer|allcustomer|resetpassword",
-//       "time": 1568640222269,
-//       "state": 0
-//     }])
-//     await insertData('user', [{
-//       "id": 'root',
-//       "name": "admin",
-//       "password": "90089e402b00",
-//       "sex": "0",
-//       "email": "xxxxxxx@qq.com",
-//       "phone": "16600000000",
-//       "departmentId": id,
-//       "jobId": 'root',
-//       "desc": "最高管理员账户",
-//       "time": 1651999915097,
-//       "state": 0
-//     }])
-//   } catch (error) {
-//   }
-// })
 
+queryData('sys_user', 'id').then(() => { }).catch(async () => {
+  try {
+    await runSqlite(`CREATE TABLE sys_user (
+      id          TEXT PRIMARY KEY
+                       UNIQUE
+                       NOT NULL,
+      create_by   TEXT,
+      create_time TEXT,
+      remarks     TEXT,
+      update_by   TEXT,
+      update_time TEXT,
+      password    TEXT,
+      realname    TEXT,
+      sex         TEXT,
+      status      TEXT,
+      username    TEXT,
+      email       TEXT,
+      user_icon   TEXT,
+      role_id     TEXT
+  );`)
+    await runSqlite(`CREATE TABLE s_course (
+      id          TEXT PRIMARY KEY
+                       UNIQUE
+                       NOT NULL,
+      create_by   TEXT,
+      create_time TEXT,
+      remarks     TEXT,
+      update_by   TEXT,
+      update_time TEXT,
+      course_name TEXT,
+      course_no   TEXT
+  );`)
+    await runSqlite(`CREATE TABLE s_grade_class (
+      id          TEXT PRIMARY KEY
+                       UNIQUE
+                       NOT NULL,
+      create_by   TEXT,
+      create_time TEXT,
+      remarks     TEXT,
+      update_by   TEXT,
+      update_time TEXT,
+      clazz       TEXT,
+      code        TEXT,
+      grade       TEXT,
+      name        TEXT
+    );`)
+    await runSqlite(`CREATE TABLE s_student (
+      id             TEXT PRIMARY KEY
+                          UNIQUE
+                          NOT NULL,
+      create_by      TEXT,
+      create_time    TEXT,
+      remarks        TEXT,
+      update_by      TEXT,
+      update_time    TEXT,
+      name           TEXT,
+      phone          TEXT,
+      qq             TEXT,
+      sex            TEXT,
+      stuno          TEXT,
+      grade_class_id TEXT
+  );`)
+    await runSqlite(`CREATE TABLE s_student_score (
+      id            TEXT PRIMARY KEY
+                         UNIQUE
+                         NOT NULL,
+      create_by     TEXT,
+      create_time   TEXT,
+      remarks       TEXT,
+      update_by     TEXT,
+      update_time   TEXT,
+      score         TEXT,
+      type          TEXT,
+      course_id     TEXT,
+      student_id    TEXT,
+      gradeclass_id TEXT
+  );`)
+    await runSqlite(`CREATE TABLE s_teacher (
+      id          TEXT PRIMARY KEY
+                       UNIQUE
+                       NOT NULL,
+      create_by   TEXT,
+      create_time TEXT,
+      remarks     TEXT,
+      update_by   TEXT,
+      update_time TEXT,
+      name        TEXT,
+      phone       TEXT,
+      qq          TEXT,
+      sex         TEXT,
+      teach_no    TEXT,
+      course_id   TEXT
+  );`)
+    await runSqlite(`CREATE TABLE sys_role (
+      id          TEXT PRIMARY KEY
+                       UNIQUE
+                       NOT NULL,
+      create_by   TEXT,
+      create_time TEXT,
+      remarks     TEXT,
+      update_by   TEXT,
+      update_time TEXT,
+      code        TEXT,
+      name        TEXT
+  );`)
+    let time = Date.now()
+    await insertData('sys_role', [{
+      id: 'root',
+      create_time: time,
+      create_by: 'root',
+      remarks: '系统管理员',
+      update_by: 'root',
+      update_time: time,
+      name: '系统管理员',
+      code: 'ROLE_ADMIN'
+    }, {
+      id: nanoid(),
+      create_time: time,
+      create_by: 'root',
+      remarks: '普通用户',
+      update_by: 'root',
+      update_time: time,
+      name: '普通用户',
+      code: 'ROLE_USER'
+    }])
+    await insertData('sys_user', [{
+      id: 'root',
+      create_time: time,
+      create_by: 'root',
+      remarks: '管理员',
+      update_by: 'root',
+      update_time: time,
+      password: '0e65ebba95ab',
+      realname: 'admin',
+      sex: '男',
+      status: '1',
+      username: 'admin',
+      email: '123@qq.com',
+      role_id: 'root'
+    }])
+  } catch (error) {
+
+  }
+})
 //登录接口
 route.post('/login', async (req, res) => {
   try {
     let { username, password } = req.body;
-    // password = encryption(password)
-    let _ip = req._ip;
+    password = encryption(password)
+    console.log(password);
+
     let ruser = await queryData('sys_user', '*', `WHERE (id=? OR username=? OR realname=? OR email=?) AND status=?`, [username, username, username, username, '1'])
     if (ruser.length === 0) {
       _err(res, '账号不存在~');
@@ -127,8 +177,8 @@ route.post('/login', async (req, res) => {
     _err(res)
   }
 });
-route.use((req,res,next)=>{
-  if(!req._userInfo.id){
+route.use((req, res, next) => {
+  if (!req._userInfo.id) {
     _nologin(res)
     return
   }
@@ -143,19 +193,19 @@ route.get('/userlist', async (req, res) => {
     let resArr = []
     userList.reverse()
     userList = userList.forEach(item => {
-      let { id, username, realname, sex, email, status, create_time, role_id ,remarks} = item;
+      let { id, username, realname, sex, email, status, create_time, role_id, remarks } = item;
       let role = roleArr.find(item => item.id === role_id)
       role = role || {}
       let str = `${username}|${realname}|${sex}|${email}|${role.name || ''}`
       if (!str.includes(searchValue)) return;
       if (!sta) {
         resArr.push({
-          id, username, realname, sex, email, status, create_time, role_id, sysRole: role,remarks
+          id, username, realname, sex, email, status, create_time, role_id, sysRole: role, remarks
         })
       } else {
         if (sta == status) {
           resArr.push({
-            id, username, realname, sex, email, status, create_time, role_id, sysRole: role,remarks
+            id, username, realname, sex, email, status, create_time, role_id, sysRole: role, remarks
           })
         }
       }
@@ -188,7 +238,6 @@ route.get('/allrole', async (req, res) => {
 route.post('/adduser', async (req, res) => {
   try {
     let { username,
-      password,
       status = 1,
       realname,
       email,
@@ -204,7 +253,7 @@ route.post('/adduser', async (req, res) => {
       remarks,
       update_by: req._userInfo.id,
       update_time: time,
-      password,
+      password: '0e65ebba95ab',
       realname,
       sex,
       status,
@@ -239,11 +288,12 @@ route.get('/getuser', async (req, res) => {
       return
     }
     let obj = user[0]
-    let role = await queryData('sys_role', "*",`WHERE id=?`,[obj.role_id])
+    delete obj.password
+    let role = await queryData('sys_role', "*", `WHERE id=?`, [obj.role_id])
     role = role[0] || {}
     _success(res, 'ok', {
       ...obj,
-      roleId: role.id||''
+      roleId: role.id || ''
     })
   } catch (error) {
     _err(res)
@@ -256,7 +306,6 @@ route.put('/updateuser', async (req, res) => {
     let {
       id,
       username,
-      password,
       status = 1,
       realname,
       email,
@@ -268,7 +317,6 @@ route.put('/updateuser', async (req, res) => {
       remarks,
       update_by: req._userInfo.id,
       update_time: time,
-      password,
       realname,
       sex,
       status,
@@ -282,12 +330,5 @@ route.put('/updateuser', async (req, res) => {
     _err(res)
   }
 })
-
-
-
-
-
-
-
 
 module.exports = route;

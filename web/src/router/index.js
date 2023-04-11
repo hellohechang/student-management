@@ -132,6 +132,31 @@ const routes = [
       }
   ]
 },
+{
+  path: '/census',
+  name: 'census',
+  meta: {
+      title: '数据统计',
+      icon: 'Medal',
+      role: ['ROLE_USER','ROLE_ADMIN']
+  },
+  redirect: '/census/index',
+  component: ()=> import('../views/layout/Index.vue'),
+  isMenu: true,
+  funcNode:2,
+  children: [
+      {
+          path: 'index',
+          name: 'scoresCensusIndex',
+          meta: {
+              title: '班级科目成绩统计',
+              icon: 'Histogram',
+              role: ['ROLE_USER','ROLE_ADMIN']
+          },
+          component: ()=> import('../views/census/ScoresCensus.vue')
+      }
+  ]
+}
 ]
 
 
