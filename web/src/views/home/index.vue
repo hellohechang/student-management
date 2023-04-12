@@ -9,7 +9,7 @@
     <!--本站数据统计 start-->
     <p style="margin-bottom:15px;color: #144b9f;">
     <div style="width: 12px;height:12px;background-color:#f9a332;border-radius: 50%;float: left;margin-top: 5px;
-                      margin-right: 8px;"></div>本站数据统计
+                                    margin-right: 8px;"></div>本站数据统计
     </p>
     <el-row :gutter="40" class="data_row">
       <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
@@ -20,7 +20,7 @@
             </el-icon>
           </div>
           <div class="data_right">
-            <h1>28<span>人</span></h1>
+            <h1>{{ total.studentTotal }}<span>人</span></h1>
             <p>学生人数</p>
           </div>
         </div>
@@ -33,7 +33,7 @@
             </el-icon>
           </div>
           <div class="data_right">
-            <h1>12<span>个</span></h1>
+            <h1>{{ total.classTotal }}<span>个</span></h1>
             <p>班级个数</p>
           </div>
         </div>
@@ -46,7 +46,7 @@
             </el-icon>
           </div>
           <div class="data_right">
-            <h1>100<span>人</span></h1>
+            <h1>{{ total.teacherTotal }}<span>人</span></h1>
             <p>教师人数</p>
           </div>
         </div>
@@ -59,28 +59,34 @@
             </el-icon>
           </div>
           <div class="data_right">
-            <h1>35<span>门</span></h1>
+            <h1>{{ total.courseTotal }}<span>门</span></h1>
             <p>课程数量</p>
           </div>
         </div>
       </el-col>
     </el-row>
-    <!--本站数据统计 end-->
-    <!--学科成绩对比统计 start-->
-    <!-- <p style="margin-bottom:15px;color: #144b9f;">
-    <div style="width: 12px;height:12px;background-color:#f9a332;border-radius: 50%;float: left;margin-top: 5px;
-              margin-right: 8px;"></div>学科成绩对比统计
-    </p>
-    <el-row>
-      <el-col>
-        <AllSubjectScoreContrast :legendData="legendData" :seriesData="seriesData" :categoryData="categoryData"  height="400px" width="100%" id="bar"/>
-      </el-col>
-    </el-row> -->
-    <!--学科成绩对比统计 end-->
   </div>
 </template>
   
 <script setup>
+import { onMounted, reactive, toRefs } from 'vue';
+import { getTotalDataApi } from '../../api/user'
+const data = reactive({
+  total: {
+    studentTotal: 0,
+    classTotal: 0,
+    teacherTotal: 0,
+    courseTotal: 0,
+  }
+})
+let { total } = toRefs(data)
+onMounted(() => {
+  getTotalDataApi().then(res => {
+    if (res.status == 200) {
+      total.value = res.data.result
+    }
+  })
+})
 </script>
   
 <style lang="less" scoped>
