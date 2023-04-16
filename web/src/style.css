@@ -1,9 +1,7 @@
-/* 清楚默认内间距、外间距  */
 * {
-  /* 内间距 */
   padding: 0;
-  /* 外间距 */
   margin: 0;
+  box-sizing: border-box;
 }
 
 body,

@@ -5,9 +5,7 @@ export const useUserStore = defineStore({
   state: () => {
     return {
       token: '',
-      userInfo: {},
-      // 角色
-      roles: []
+      userInfo: {}
     }
   },
   getters: {},

@@ -1,18 +1,10 @@
 <template>
   <div class="main-tabs-view">
     <div class="tabs-view">
-      <el-tabs v-model="activeTabsValue" type="card" 
-      @tab-click="tabClick" @tab-remove="removeTab">
-        <el-tab-pane v-for="item in visitedViews" 
-        :key="item.path" :path="item.path" 
-        :label="item.title" 
-        :name="item.path"
+      <el-tabs v-model="activeTabsValue" type="card" @tab-click="tabClick" @tab-remove="removeTab">
+        <el-tab-pane v-for="item in visitedViews" :key="item.path" :path="item.path" :label="item.title" :name="item.path"
           :closable="!(item.meta && item.meta.affix)">
           <template #label>
-            <el-icon class="tabs-icon" v-if="item.icon">
-              <!-- 动态加载图标组件 -->
-              <component :is="item.icon"></component>
-            </el-icon>
             {{ item.title }}
           </template>
         </el-tab-pane>
@@ -42,6 +34,25 @@ const activeTabsValue = computed({
     TagsViewStore.setTabsMenuValue(val);
   }
 })
+// 添加tabs
+const addTabs = () => {
+  const { name } = route
+  if (name === 'Login') return
+  if (name) {
+    TagsViewStore.addView(route)
+  }
+}
+// 判断当前展示标签
+const isActive = (path) => {
+  return path === route.path
+}
+// 删除tabs
+const removeTab = (activeTabPath) => {
+  if (isActive(activeTabPath)) {
+    toLastView(activeTabPath)
+  }
+  TagsViewStore.delView(activeTabPath)
+}
 // 显示上一个tabs标签
 function toLastView(activeTabPath) {
   let index = visitedViews.value.findIndex(item => item.path === activeTabPath)
@@ -55,27 +66,7 @@ const tabClick = (tabItem) => {
   let path = tabItem.props.name;
   router.push(path);
 }
-// 添加tabs
-const addTabs = () => {
-  const { name } = route
-  if (name === 'Login') return
-  if (name) {
-    TagsViewStore.addView(route)
-  }
-  return false
-}
 
-// 判断是否激活
-const isActive = (path) => {
-  return path === route.path
-}
-// 删除tabs
-const removeTab = async (activeTabPath) => {
-  if (isActive(activeTabPath)) {
-    toLastView(activeTabPath)
-  }
-  await TagsViewStore.delView(activeTabPath)
-}
 onMounted(() => {
   addTabs()
 })
@@ -111,8 +102,8 @@ watch(route, () => {
 }
 
 :deep(.el-tabs .el-tabs__header .el-tabs__item) {
+  padding: 0px 10px !important;
   border: none;
-  /* color: #cccccc; */
 }
 
 :deep(.el-tabs .el-tabs__header .el-tabs__item.is-active) {

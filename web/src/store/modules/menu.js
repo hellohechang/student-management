@@ -7,34 +7,31 @@ export const useMenuStore = defineStore({
     // menu 静态路由
     routers: [],
     // 动态路由
-    addRouters: [],
-    // 用户角色
-    roles: [],
+    addRouters: []
   }),
   getters: {},
   actions: {
     // 设置角色
     generateRoutes: function ({ roles }) {
+      // 过滤路由
       let accessedRoutes = filterAsyncRoutes({
         routes: asyncRoutes,
         roles: roles,
       });
       this.addRouters = accessedRoutes;
+      // 合并静态和动态路由
       this.routers = staticRouter.concat(accessedRoutes);
       return accessedRoutes;
-    },
-    // 动态生成访问路由
-    setRoles({ roles }) {
-      this.roles = roles;
-    },
+    }
   },
 });
-// 通过递归过滤asyncRoutes
+// 通过角色过滤asyncRoutes
 export function filterAsyncRoutes({ routes, roles }) {
   const res = [];
   routes.forEach((route) => {
     const tmp = { ...route };
     if (hasPermission(roles, tmp)) {
+      // 有子路由则递归过滤
       if (tmp.children) {
         tmp.children = filterAsyncRoutes({
           routes: tmp.children,
@@ -46,9 +43,9 @@ export function filterAsyncRoutes({ routes, roles }) {
   });
   return res;
 }
+// 判断角色是否可以访问路由
 function hasPermission(roles, route) {
   if (route.meta && route.meta.role) {
-    // some() 方法用于检测数组中的元素是否满足指定条件（函数提供）
     return roles.some((role) => route.meta.role.indexOf(role) >= 0);
   } else {
     return true;

@@ -10,6 +10,14 @@ route.use((req, res, next) => {
   }
   next()
 })
+route.use((req, res, next) => {
+  let role = req._userInfo.role
+  if (role && role.code === 'ROLE_ADMIN') {
+    next();
+  } else {
+    _nologin(res);
+  }
+});
 //获取班级列表
 route.get('/gradeclasslist', async (req, res) => {
   try {

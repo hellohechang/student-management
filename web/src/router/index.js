@@ -3,6 +3,8 @@ import NProgress from '../config/nprogress';
 import { useUserStore } from '../store/modules/user';
 import { useMenuStore } from '../store/modules/menu';
 // 定义静态路由
+// isMenu 是否展示在左菜单
+// funcNode 是否有子菜单
 export const staticRouter = [
   {
     path: '/',
@@ -48,6 +50,12 @@ export const staticRouter = [
           import('../views/user/components/PersonalSettings.vue'),
       },
     ],
+  },
+  {
+    path: '/:catchAll(.*)',
+    component: () => import('../views/NotFound.vue'),
+    meta: { title: '404' },
+    isMenu: false,
   },
 ];
 // 定义动态路由
@@ -194,24 +202,27 @@ export const asyncRoutes = [
   },
 ];
 
-// 3. 创建路由实例并传递 `routes` 配置
+// 创建路由
 const router = createRouter({
-  // 4. 内部提供了 history 模式的实现。为了简单起见，我们在这里使用 hash 模式。
   history: createWebHashHistory(),
   routes: staticRouter,
 });
+
 // 路由拦截 beforeEach
 router.beforeEach(async (to, from, next) => {
   // 1.NProgress 开始
   NProgress.start();
 
-  //2.如果是访问登录页，直接放行
-  if (to.path === '/login') return next();
-
-  //3.判断是否有Token,没有重定向到login
   const userStore = useUserStore();
-  if (!userStore.token)
-    return next({ path: `/login?redirect=${to.path}`, replace: true });
+  //如果是访问登录页
+  if (to.path === '/login') {
+    //判断是否有Token,有跳转到到home
+    if (userStore.token) return next({ path: `/home`, replace: true })
+    return next()
+  };
+
+  //判断是否有Token,没有跳转到到login
+  if (!userStore.token) return next({ path: `/login`, replace: true });
 
   // 获取登录用户的角色
   const { userInfo } = userStore;
@@ -220,10 +231,14 @@ router.beforeEach(async (to, from, next) => {
 
   // 根据角色动态生成路由访问映射
   const menuStore = useMenuStore();
+  // 判断menuStore是否存有路由配置
   if (!menuStore.routers.length) {
-    const accessRoutes = menuStore.generateRoutes({ roles: roles });
-    accessRoutes.forEach((item) => router.addRoute(item)); // 动态添加访问路由表
-    next({ ...to, replace: true }); // 这里相当于push到一个页面 不在进入路由拦截
+    // 生成动态路由
+    const accessRoutes = menuStore.generateRoutes({ roles });
+    // 动态添加访问路由表
+    accessRoutes.forEach((item) => router.addRoute(item));
+    // 配置好路由之后重新再跳转一次
+    next({ ...to, replace: true });
   } else {
     // 正常访问页面
     next();

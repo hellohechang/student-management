@@ -20,7 +20,7 @@ const {
 } = require('../utils');
 
 queryData('sys_user', 'id')
-  .then(() => {})
+  .then(() => { })
   .catch(async () => {
     try {
       await runSqlite(`CREATE TABLE sys_user (
@@ -166,14 +166,13 @@ queryData('sys_user', 'id')
           role_id: 'root',
         },
       ]);
-    } catch (error) {}
+    } catch (error) { }
   });
 //登录接口
 route.post('/login', async (req, res) => {
   try {
     let { username, password } = req.body;
     password = encryption(password);
-    console.log(password);
 
     let ruser = await queryData(
       'sys_user',
@@ -208,7 +207,51 @@ route.use((req, res, next) => {
     _nologin(res);
     return;
   }
-  next();
+  next()
+});
+//获取所有角色
+route.get('/allrole', async (req, res) => {
+  try {
+    let roleArr = await queryData('sys_role', '*');
+    _success(res, 'ok', roleArr);
+  } catch (error) {
+    _err(res);
+  }
+});
+
+
+// 首页统计信息
+route.get('/totaldata', async (req, res) => {
+  try {
+    let studentTotal = (await queryData('s_student', `count(*)`))[0][
+      'count(*)'
+    ];
+    let classTotal = (await queryData('s_grade_class', `count(*)`))[0][
+      'count(*)'
+    ];
+    let teacherTotal = (await queryData('s_teacher', `count(*)`))[0][
+      'count(*)'
+    ];
+    let courseTotal = (await queryData('s_course', `count(*)`))[0]['count(*)'];
+    _success(res, 'ok', {
+      studentTotal,
+      classTotal,
+      teacherTotal,
+      courseTotal,
+    });
+  } catch (error) {
+    _err(res);
+  }
+});
+
+
+route.use((req, res, next) => {
+  let role = req._userInfo.role
+  if (role && role.code === 'ROLE_ADMIN') {
+    next();
+  } else {
+    _nologin(res);
+  }
 });
 //获取用户列表
 route.get('/userlist', async (req, res) => {
@@ -274,8 +317,8 @@ route.get('/userlist', async (req, res) => {
     pageIndex < 0
       ? (pageIndex = 0)
       : pageIndex > totalNum
-      ? (pageIndex = totalNum)
-      : null;
+        ? (pageIndex = totalNum)
+        : null;
     let content = resArr.slice(
       (pageIndex - 1) * pageSize,
       pageIndex * pageSize
@@ -291,15 +334,7 @@ route.get('/userlist', async (req, res) => {
   }
 });
 
-//获取所有角色
-route.get('/allrole', async (req, res) => {
-  try {
-    let roleArr = await queryData('sys_role', '*');
-    _success(res, 'ok', roleArr);
-  } catch (error) {
-    _err(res);
-  }
-});
+
 //添加用户
 route.post('/adduser', async (req, res) => {
   try {
@@ -406,27 +441,5 @@ route.put('/updateuser', async (req, res) => {
     _err(res);
   }
 });
-// 首页统计信息
-route.get('/totaldata', async (req, res) => {
-  try {
-    let studentTotal = (await queryData('s_student', `count(*)`))[0][
-      'count(*)'
-    ];
-    let classTotal = (await queryData('s_grade_class', `count(*)`))[0][
-      'count(*)'
-    ];
-    let teacherTotal = (await queryData('s_teacher', `count(*)`))[0][
-      'count(*)'
-    ];
-    let courseTotal = (await queryData('s_course', `count(*)`))[0]['count(*)'];
-    _success(res, 'ok', {
-      studentTotal,
-      classTotal,
-      teacherTotal,
-      courseTotal,
-    });
-  } catch (error) {
-    _err(res);
-  }
-});
+
 module.exports = route;

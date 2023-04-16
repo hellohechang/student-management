@@ -10,6 +10,24 @@ route.use((req, res, next) => {
   }
   next()
 })
+//获取所有班级
+route.get('/allgradeclass', async (req, res) => {
+  try {
+    let classArr = await queryData('s_grade_class', "*")
+    _success(res, 'ok', classArr)
+  } catch (error) {
+    _err(res)
+  }
+})
+
+route.use((req, res, next) => {
+  let role = req._userInfo.role
+  if (role && role.code === 'ROLE_ADMIN') {
+    next();
+  } else {
+    _nologin(res);
+  }
+});
 //获取学生列表
 route.get('/studentlist', async (req, res) => {
   try {
@@ -46,15 +64,7 @@ route.get('/studentlist', async (req, res) => {
     _err(res)
   }
 })
-//获取所有班级
-route.get('/allgradeclass', async (req, res) => {
-  try {
-    let classArr = await queryData('s_grade_class', "*")
-    _success(res, 'ok', classArr)
-  } catch (error) {
-    _err(res)
-  }
-})
+
 //添加学生
 route.post('/addstudent', async (req, res) => {
   try {
@@ -137,7 +147,7 @@ route.put('/updatestudent', async (req, res) => {
       stuno,
       sex,
       phone,
-      grade_class_id:gradeClassId,
+      grade_class_id: gradeClassId,
       qq,
       name
     }, `WHERE id=?`, [id])

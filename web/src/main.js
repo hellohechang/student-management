@@ -18,7 +18,9 @@ app.use(router)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+// 全局注册svg组件
 app.component('svg-icon',SvgIcon)
+
 app.use(ElementPlus, {
   locale: zhCn,
 })

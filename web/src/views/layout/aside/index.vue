@@ -1,5 +1,5 @@
 <template>
-  <el-menu color="white" text-color="#67879b" router :default-active="route.path" :unique-opened="false"
+  <el-menu unique-opened color="white" text-color="#67879b" router :default-active="route.path" :unique-opened="false"
     :default-openeds="[route.path]" class="el-menu-vertical-demo" :collapse="isCollapse" :collapse-transition="true">
     <!--logo start-->
     <div class="imgBox hidden-xs-only">
@@ -9,15 +9,16 @@
 
     <!--遍历菜单 start-->
     <template v-for="(v, index) in menuData" :key="index">
-      <!-- 如果菜单有孩子菜单，则循环孩子菜单 -->
-      <el-sub-menu v-if="v.isMenu && v.funcNode != 1" :index="index">
+      <!-- 展示并且有子菜单 -->
+      <el-sub-menu v-if="v.isMenu && v.funcNode != 1" :index="index + ''">
         <template #title>
           <el-icon>
             <component :is="v.meta.icon"></component>
           </el-icon>
           <span>{{ v.meta.title }}</span>
         </template>
-        <el-menu-item v-for="child in v.children" :key="child.path" :index="v.path + '/' + child.path">
+        <!-- 遍历子菜单 -->
+        <el-menu-item v-for="child in v.children" :key="child.path" :index="`${v.path}/${child.path}`">
           <el-icon>
             <component :is="child.meta.icon"></component>
           </el-icon>
@@ -25,7 +26,7 @@
         </el-menu-item>
       </el-sub-menu>
       <!--没有子菜单-->
-      <el-menu-item v-else-if="v.isMenu" :key="v.path" :index="v.path">
+      <el-menu-item v-else-if="v.isMenu" :key="v.children[0].path" :index="v.children[0].path">
         <el-icon>
           <component :is="v.children[0].meta.icon"></component>
         </el-icon>
@@ -33,7 +34,6 @@
       </el-menu-item>
     </template>
     <!--遍历菜单 end-->
-
   </el-menu>
 </template>
 
@@ -73,10 +73,11 @@ const isCollapse = computed(() => !SettingStore.isCollapse)
 
 /* 选中 */
 ::v-deep(.el-menu-item.is-active) {
-  color: white;
-  background: linear-gradient(to right, #a0c594, #039759);
+  color: white !important;
+  background: linear-gradient(to right, #a0c594, #039759) !important;
 }
 
+// 展开侧边的宽度
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
 }

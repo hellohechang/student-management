@@ -6,12 +6,12 @@ export const useTagsViewStore = defineStore({
   // state: 返回对象的函数
   state: () => {
     return {
-      activeTabsValue: '',
+      activeTabsValue: '/home',
       visitedViews: [
         {
           path: '/home',
           name: 'home',
-          meta: { title: '首页', affix: true },
+          meta: { title: '首页', affix: true, icon: 'House' },
           title: '首页',
         },
       ],
@@ -25,19 +25,13 @@ export const useTagsViewStore = defineStore({
     setTabsMenuValue(val) {
       this.activeTabsValue = val;
     },
+    // 添加标签
     addView(view) {
       this.addVisitedView(view);
     },
-    removeView(routes) {
-      return new Promise((resolve, reject) => {
-        this.visitedViews = this.visitedViews.filter(
-          (item) => !routes.includes(item.path)
-        );
-        resolve(null);
-      });
-    },
     addVisitedView(view) {
       this.setTabsMenuValue(view.path);
+      // 新增已存在
       if (this.visitedViews.some((v) => v.path === view.path)) return;
 
       this.visitedViews.push(
@@ -49,23 +43,18 @@ export const useTagsViewStore = defineStore({
         this.cachedViews.push(view.name);
       }
     },
+    removeView(routes) {
+      return new Promise((resolve, reject) => {
+        this.visitedViews = this.visitedViews.filter(
+          (item) => !routes.includes(item.path)
+        );
+        resolve(null);
+      });
+    },
+
     delView(activeTabPath) {
-      // return new Promise(resolve => {
-      //   this.delVisitedView(activeTabPath)
-      //   this.delCachedView(activeTabPath)
-      //   resolve({
-      //     visitedViews: [...this.visitedViews],
-      //     cachedViews: [...this.cachedViews]
-      //   })
-      // })
       this.delVisitedView(activeTabPath);
       this.delCachedView(activeTabPath);
-      // return new Promise(resolve => {
-      //   resolve({
-      //     visitedViews: [...this.visitedViews],
-      //     cachedViews: [...this.cachedViews]
-      //   })
-      // })
     },
     toLastView(activeTabPath) {
       let index = this.visitedViews.findIndex(

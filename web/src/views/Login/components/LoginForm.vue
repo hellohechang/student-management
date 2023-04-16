@@ -1,7 +1,7 @@
 <template>
   <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules">
-    <el-form-item label="" prop="username">
-      <el-input placeholder="请输入用户名" autoComplete="on" style="position: relative" v-model="ruleForm.username">
+    <el-form-item prop="username">
+      <el-input placeholder="请输入用户名" v-model="ruleForm.username">
         <template #prefix>
           <el-icon>
             <UserFilled />
@@ -10,8 +10,8 @@
       </el-input>
     </el-form-item>
 
-    <el-form-item label="" prop="password">
-      <el-input placeholder="请输入密码" autoComplete="on" v-model="ruleForm.password" :type="passwordType">
+    <el-form-item prop="password">
+      <el-input placeholder="请输入密码" v-model="ruleForm.password" :type="passwordType">
         <template #prefix>
           <el-icon>
             <GoodsFilled />
@@ -90,12 +90,6 @@ const submitForm = (formEl) => {
           duration: 3000
         })
       } else {
-        ElNotification({
-          title: '温馨提示',
-          message: data.message,
-          type: "error",
-          duration: 3000
-        });
         loading.value = false
       }
     } else {

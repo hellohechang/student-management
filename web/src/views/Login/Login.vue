@@ -37,7 +37,7 @@ import LoginForm from './components/LoginForm.vue'
   align-items: center;
   justify-content: center;
   align-items: center;
-  padding: 25px 25px;
+  padding: 25px;
   box-sizing: border-box;
 
   .login-box {
@@ -96,7 +96,6 @@ import LoginForm from './components/LoginForm.vue'
     }
   }
 }
-
 
 
 // 给子组件设置样式

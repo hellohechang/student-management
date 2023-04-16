@@ -3,13 +3,21 @@ const { _success, _err, nanoid, _nologin } = require('../utils');
 const { queryData, insertData, deleteData, updateData } = require('../sqlite');
 const route = express.Router()
 
-route.use((req,res,next)=>{
-  if(!req._userInfo.id){
+route.use((req, res, next) => {
+  if (!req._userInfo.id) {
     _nologin(res)
     return
   }
   next()
 })
+route.use((req, res, next) => {
+  let role = req._userInfo.role
+  if (role && role.code === 'ROLE_ADMIN') {
+    next();
+  } else {
+    _nologin(res);
+  }
+});
 //获取角色列表
 route.get('/rolelist', async (req, res) => {
   try {
@@ -89,7 +97,7 @@ route.get('/getrole', async (req, res) => {
   }
 })
 
-// 更新用户信息
+// 更新角色信息
 route.put('/updaterole', async (req, res) => {
   try {
     let {

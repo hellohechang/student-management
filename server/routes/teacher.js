@@ -10,6 +10,30 @@ route.use((req, res, next) => {
   }
   next()
 })
+
+//获取所有课程列表
+route.get('/allcourse', async (req, res) => {
+  try {
+    let courseArr = await queryData('s_course', "*")
+    _success(res, 'ok', courseArr)
+  } catch (error) {
+    _err(res)
+  }
+})
+
+
+
+
+
+
+route.use((req, res, next) => {
+  let role = req._userInfo.role
+  if (role && role.code === 'ROLE_ADMIN') {
+    next();
+  } else {
+    _nologin(res);
+  }
+});
 //获取教师列表
 route.get('/teacherlist', async (req, res) => {
   try {
@@ -47,15 +71,7 @@ route.get('/teacherlist', async (req, res) => {
     _err(res)
   }
 })
-//获取所有课程列表
-route.get('/allcourse', async (req, res) => {
-  try {
-    let courseArr = await queryData('s_course', "*")
-    _success(res, 'ok', courseArr)
-  } catch (error) {
-    _err(res)
-  }
-})
+
 //添加教师
 route.post('/addteacher', async (req, res) => {
   try {
@@ -87,7 +103,7 @@ route.post('/addteacher', async (req, res) => {
     _err(res)
   }
 })
-//删除学生
+//删除教师
 route.delete('/delteacher', async (req, res) => {
   try {
     let { id } = req.query;

@@ -39,9 +39,13 @@ app.use(async (req, res, next) => {
     let _token = req.headers['token'],//读取token
       uobj = {},
       obj = jwtde(_token);//解密token
-      let userinfo = await queryData('sys_user', '*', `WHERE id = ? AND status=?`, [ obj.id,'1']);
+    let userinfo = await queryData('sys_user', '*', `WHERE id = ? AND status=?`, [obj.id, '1']);
     if (userinfo.length > 0) {
+      let roleArr = await queryData('sys_role', '*', `WHERE id=?`, [userinfo[0].role_id]);
       uobj = userinfo[0];
+      if (roleArr.length > 0) {
+        uobj.role = roleArr[0]
+      }
     }
     req._userInfo = uobj;
     req._ip = getClientIp(req);
